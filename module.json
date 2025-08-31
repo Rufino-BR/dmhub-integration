@@ -1,4 +1,5 @@
 {
+  "id": "dmhub-integration",
   "name": "dmhub-integration",
   "title": "DMHUB Integration",
   "description": "Integração entre DMHUB e Foundry VTT para sincronização de campanhas e personagens",
@@ -7,7 +8,7 @@
   "minimumCoreVersion": "13",
   "compatibleCoreVersion": "13",
   "url": "https://github.com/Rufino-BR/dmhub-integration",
-  "manifest": "https://github.com/Rufino-BR/dmhub-integration/releases/latest/download/module.json",
+  "manifest": "https://raw.githubusercontent.com/Rufino-BR/dmhub-integration/main/module.json",
   "download": "https://github.com/Rufino-BR/dmhub-integration/releases/latest/download/dmhub-integration.zip",
   "esmodules": [
     "scripts/dmhub-api.js",
