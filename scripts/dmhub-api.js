@@ -118,7 +118,7 @@ class DMHUBAPI {
             success: true,
             data: {
                 module: 'dmhub-integration',
-                version: '1.0.0',
+                version: '1.3.0',
                 status: 'active',
                 world: game.world.id,
                 system: game.system.id,
@@ -383,7 +383,7 @@ class DMHUBAPI {
                 data,
                 timestamp: Date.now(),
                 world_id: game.world.id,
-                module_version: '1.0.0'
+                module_version: '1.3.0'
             };
 
             await fetch(this.config.webhook_url, {
