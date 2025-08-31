@@ -6,7 +6,7 @@
 class DMHUBAPI {
     constructor() {
         this.endpoints = new Map();
-        this._config = null; // Será configurado depois
+        this.config = null; // Será configurado depois
         this.setupEndpoints();
         this.setupHooks();
         
@@ -19,7 +19,7 @@ class DMHUBAPI {
      */
     loadConfig() {
         try {
-            this._config = {
+            this.config = {
                 enabled: game.settings.get('dmhub-integration', 'enabled') ?? true,
                 api_key: game.settings.get('dmhub-integration', 'api_key') ?? '',
                 webhook_url: game.settings.get('dmhub-integration', 'webhook_url') ?? '',
@@ -28,7 +28,7 @@ class DMHUBAPI {
             };
         } catch (error) {
             console.warn('DMHUB Integration: Configurações ainda não disponíveis, usando padrões');
-            this._config = {
+            this.config = {
                 enabled: true,
                 api_key: '',
                 webhook_url: '',
@@ -248,7 +248,7 @@ class DMHUBAPI {
     getConfig(request) {
         return {
             success: true,
-            data: this._config
+            data: this.config
         };
     }
 
@@ -273,6 +273,47 @@ class DMHUBAPI {
                 code: 500
             };
         }
+    }
+
+    /**
+     * Método de teste para verificar se a API está funcionando
+     */
+    test() {
+        console.log('DMHUB Integration: Executando teste completo da API...');
+        
+        try {
+            const result = {
+                status: this.getStatus(),
+                actors: this.getActors(),
+                worlds: this.getWorlds(),
+                config: this.getConfig()
+            };
+            
+            console.log('DMHUB Integration: ✅ Teste executado com sucesso!');
+            console.log('DMHUB Integration: Resultado:', result);
+            
+            return result;
+        } catch (error) {
+            console.error('DMHUB Integration: ❌ Erro no teste:', error);
+            return {
+                error: error.message,
+                success: false
+            };
+        }
+    }
+
+    /**
+     * Método para obter informações da API
+     */
+    info() {
+        return {
+            module: 'dmhub-integration',
+            version: '1.3.0',
+            available: true,
+            methods: ['getStatus', 'getActors', 'getWorlds', 'getConfig', 'test', 'info'],
+            endpoints: Array.from(this.endpoints.keys()),
+            config: this._config
+        };
     }
 
     /**
@@ -334,7 +375,7 @@ class DMHUBAPI {
      * Notificar DMHUB sobre mudanças
      */
     async notifyDMHUB(event, data) {
-        if (!this._config.webhook_url) return;
+        if (!this.config.webhook_url) return;
 
         try {
             const payload = {
@@ -345,11 +386,11 @@ class DMHUBAPI {
                 module_version: '1.0.0'
             };
 
-            await fetch(this._config.webhook_url, {
+            await fetch(this.config.webhook_url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this._config.api_key}`
+                    'Authorization': `Bearer ${this.config.api_key}`
                 },
                 body: JSON.stringify(payload)
             });
@@ -387,35 +428,9 @@ class DMHUBAPI {
      */
     handleConfigUpdate(data) {
         // Atualizar configuração local
-        this._config = { ...this._config, ...data };
-        game.settings.set('dmhub-integration', 'config', this._config);
+        this.config = { ...this.config, ...data };
+        game.settings.set('dmhub-integration', 'config', this.config);
         console.log('DMHUB Integration: Configuration updated', data);
-    }
-
-    /**
-     * Método para verificar se a API está ativa
-     */
-    isActive() {
-        return this._config && this._config.enabled;
-    }
-
-    /**
-     * Aliases para facilitar o uso da API
-     */
-    get status() {
-        return this.getStatus();
-    }
-
-    get actors() {
-        return this.getActors();
-    }
-
-    get worlds() {
-        return this.getWorlds();
-    }
-
-    get config() {
-        return this.getConfig();
     }
 }
 
