@@ -1,40 +1,23 @@
 {
   "name": "dmhub-integration",
   "title": "DMHUB Integration",
-  "description": "Integração completa entre Foundry VTT e DMHUB para sincronização de personagens, mundos e dados de campanha.",
+  "description": "Integração entre DMHUB e Foundry VTT para sincronização de campanhas e personagens",
   "version": "1.0.0",
-  "author": "DMHUB Team",
+  "author": "Rufino-BR",
   "minimumCoreVersion": "13",
   "compatibleCoreVersion": "13",
+  "url": "https://github.com/Rufino-BR/dmhub-integration",
+  "manifest": "https://github.com/Rufino-BR/dmhub-integration/releases/latest/download/module.json",
+  "download": "https://github.com/Rufino-BR/dmhub-integration/releases/latest/download/dmhub-integration.zip",
   "esmodules": [
     "scripts/dmhub-api.js",
-    "scripts/dmhub-sync.js",
-    "scripts/dmhub-webhook.js",
     "scripts/dmhub-config.js"
   ],
   "styles": [
     "styles/dmhub.css"
   ],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json"
-    },
-    {
-      "lang": "pt-BR",
-      "name": "Português (Brasil)",
-      "path": "lang/pt-BR.json"
-    }
-  ],
-  "url": "https://github.com/dmhub/foundry-integration",
-  "manifest": "https://raw.githubusercontent.com/dmhub/foundry-integration/main/module.json",
-  "download": "https://github.com/dmhub/foundry-integration/releases/latest/download/dmhub-integration.zip",
-  "license": "MIT",
-  "readme": "https://github.com/dmhub/foundry-integration/blob/main/README.md",
-  "bugs": "https://github.com/dmhub/foundry-integration/issues",
-  "changelog": "https://github.com/dmhub/foundry-integration/blob/main/CHANGELOG.md",
-  "flags": {
-    "allowBugReporter": true
-  }
+  "socket": true,
+  "protected": false,
+  "coreTranslation": false,
+  "library": false
 }
