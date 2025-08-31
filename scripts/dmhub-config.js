@@ -21,9 +21,6 @@ class DMHUBConfig {
         
         // Depois carregar as configurações
         this.loadConfig();
-        
-        // Inicializar interface
-        this.initInterface();
     }
 
     /**
