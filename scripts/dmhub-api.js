@@ -255,12 +255,10 @@ class DMHUBAPI {
     /**
      * Endpoint: Webhook handler
      */
-    async webhookHandler(request) {
+    webhookHandler(request) {
         try {
-            const { event, data } = request.body;
-            
-            // Processar evento do webhook
-            this.processWebhookEvent(event, data);
+            const data = request.body;
+            this.processWebhookEvent(data.event, data.data);
             
             return {
                 success: true,
@@ -273,6 +271,54 @@ class DMHUBAPI {
                 code: 500
             };
         }
+    }
+
+    /**
+     * Método de teste para verificar se a API está funcionando
+     */
+    test() {
+        console.log('DMHUB Integration: Executando teste completo da API...');
+        
+        try {
+            const result = {
+                status: this.getStatus(),
+                actors: this.getActors(),
+                worlds: this.getWorlds(),
+                config: this.getConfig()
+            };
+            
+            console.log('DMHUB Integration: ✅ Teste executado com sucesso!');
+            console.log('DMHUB Integration: Resultado:', result);
+            
+            return result;
+        } catch (error) {
+            console.error('DMHUB Integration: ❌ Erro no teste:', error);
+            return {
+                error: error.message,
+                success: false
+            };
+        }
+    }
+
+    /**
+     * Método para obter informações da API
+     */
+    info() {
+        return {
+            module: 'dmhub-integration',
+            version: '1.2.0',
+            available: true,
+            methods: ['getStatus', 'getActors', 'getWorlds', 'getConfig', 'test', 'info'],
+            endpoints: Array.from(this.endpoints.keys()),
+            config: this.config
+        };
+    }
+
+    /**
+     * Método para verificar se a API está ativa
+     */
+    isActive() {
+        return this.config && this.config.enabled;
     }
 
     /**
@@ -402,12 +448,6 @@ Hooks.once('ready', () => {
 
         // Instanciar a API quando o script carregar
         const dmhubAPI = new DMHUBAPI();
-        
-        // Expor a instância como dmhubAPI (minúsculo) para uso direto
-        window.dmhubAPI = dmhubAPI;
-        
         console.log('DMHUB Integration: API initialized successfully');
-        console.log('DMHUB Integration: ✅ API disponível como window.dmhubAPI');
-        console.log('DMHUB Integration: ✅ Use window.dmhubAPI.test() para testar');
     }
 });
