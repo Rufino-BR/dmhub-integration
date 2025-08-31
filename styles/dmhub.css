@@ -1,0 +1,305 @@
+/* DMHUB Integration - Estilos CSS */
+
+/* Botão de configuração na barra de ferramentas */
+.dmhub-config-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    height: 40px;
+    margin: 0 5px;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+    width: 40px;
+}
+
+.dmhub-config-btn:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dmhub-config-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Diálogo de configuração */
+.dmhub-config-dialog {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    max-width: 600px;
+    width: 100%;
+}
+
+.dmhub-config-dialog .dialog-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px 12px 0 0;
+    color: white;
+    padding: 20px;
+}
+
+.dmhub-config-dialog .dialog-content {
+    background: #2b2b2b;
+    color: #e0e0e0;
+    padding: 30px;
+}
+
+.dmhub-config-dialog .dialog-buttons {
+    background: #1a1a1a;
+    border-radius: 0 0 12px 12px;
+    padding: 20px;
+}
+
+/* Formulário de configuração */
+#dmhub-config-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: #e0e0e0;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="url"],
+.form-group input[type="number"] {
+    background: #3a3a3a;
+    border: 2px solid #555;
+    border-radius: 6px;
+    color: #e0e0e0;
+    font-size: 14px;
+    padding: 10px 12px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input[type="url"]:focus,
+.form-group input[type="number"]:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.form-group input[type="checkbox"] {
+    accent-color: #667eea;
+    height: 18px;
+    width: 18px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.checkbox-group label {
+    align-items: center;
+    display: flex;
+    font-size: 13px;
+    font-weight: 500;
+    gap: 8px;
+}
+
+/* Botões do diálogo */
+.dialog-buttons button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 5px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.dialog-buttons button:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dialog-buttons button:active {
+    transform: translateY(0);
+}
+
+.dialog-buttons button.secondary {
+    background: #555;
+}
+
+.dialog-buttons button.secondary:hover {
+    background: #666;
+}
+
+/* Notificações */
+.dmhub-notification {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    color: white;
+    margin: 10px;
+    padding: 15px 20px;
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Indicador de status */
+.dmhub-status-indicator {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 20px;
+    bottom: 20px;
+    color: white;
+    display: flex;
+    font-size: 12px;
+    gap: 8px;
+    left: 20px;
+    padding: 8px 16px;
+    position: fixed;
+    z-index: 1000;
+}
+
+.dmhub-status-indicator.connected {
+    background: rgba(76, 175, 80, 0.8);
+}
+
+.dmhub-status-indicator.disconnected {
+    background: rgba(244, 67, 54, 0.8);
+}
+
+.dmhub-status-indicator.syncing {
+    background: rgba(255, 152, 0, 0.8);
+}
+
+/* Ícones de status */
+.dmhub-status-indicator .status-icon {
+    border-radius: 50%;
+    height: 8px;
+    width: 8px;
+}
+
+.dmhub-status-indicator.connected .status-icon {
+    background: #4caf50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+}
+
+.dmhub-status-indicator.disconnected .status-icon {
+    background: #f44336;
+    box-shadow: 0 0 8px rgba(244, 67, 54, 0.6);
+}
+
+.dmhub-status-indicator.syncing .status-icon {
+    background: #ff9800;
+    box-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .dmhub-config-dialog {
+        margin: 20px;
+        max-width: calc(100% - 40px);
+    }
+    
+    .dmhub-config-dialog .dialog-content {
+        padding: 20px;
+    }
+    
+    .dmhub-status-indicator {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        text-align: center;
+    }
+}
+
+/* Tema escuro (padrão do Foundry VTT) */
+.dmhub-config-dialog {
+    background: #1a1a1a;
+    border: 1px solid #333;
+}
+
+.dmhub-config-dialog .dialog-content {
+    background: #2b2b2b;
+    color: #e0e0e0;
+}
+
+.dmhub-config-dialog .dialog-buttons {
+    background: #1a1a1a;
+    border-top: 1px solid #333;
+}
+
+/* Tema claro (se aplicável) */
+.light-theme .dmhub-config-dialog {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+}
+
+.light-theme .dmhub-config-dialog .dialog-content {
+    background: #ffffff;
+    color: #333;
+}
+
+.light-theme .dmhub-config-dialog .dialog-buttons {
+    background: #f5f5f5;
+    border-top: 1px solid #ddd;
+}
+
+.light-theme .form-group input[type="text"],
+.light-theme .form-group input[type="password"],
+.light-theme .form-group input[type="url"],
+.light-theme .form-group input[type="number"] {
+    background: #ffffff;
+    border: 2px solid #ddd;
+    color: #333;
+}
+
+.light-theme .form-group input[type="text"]:focus,
+.light-theme .form-group input[type="password"]:focus,
+.light-theme .form-group input[type="url"]:focus,
+.light-theme .form-group input[type="number"]:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
