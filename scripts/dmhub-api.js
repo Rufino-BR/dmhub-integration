@@ -42,47 +42,99 @@ class DMHUBAPI {
      * Configurar endpoints da API
      */
     setupEndpoints() {
-        // Endpoint de status
-        this.endpoints.set('/api/dmhub/status', {
+        console.log('DMHUB Integration: Tentando registrar endpoints via foundry-rest-api...');
+        
+        // Verificar se o módulo foundry-rest-api está disponível
+        if (typeof window.foundryRestAPI !== 'undefined') {
+            console.log('DMHUB Integration: foundry-rest-api encontrado, registrando endpoints...');
+            
+            try {
+                // Registrar endpoints via foundry-rest-api
+                this.registerWithFoundryRestAPI();
+                console.log('DMHUB Integration: Endpoints registrados com sucesso!');
+            } catch (error) {
+                console.error('DMHUB Integration: Erro ao registrar endpoints:', error);
+            }
+        } else {
+            console.warn('DMHUB Integration: foundry-rest-api não encontrado, usando sistema alternativo...');
+            this.setupAlternativeEndpoints();
+        }
+    }
+
+    /**
+     * Registrar endpoints via foundry-rest-api
+     */
+    registerWithFoundryRestAPI() {
+        // Tentar registrar via hooks do foundry-rest-api
+        if (Hooks.call('foundry-rest-api.registerEndpoint', {
+            path: '/api/dmhub/status',
             method: 'GET',
             handler: this.getStatus.bind(this)
-        });
+        })) {
+            console.log('DMHUB Integration: Endpoint /api/dmhub/status registrado!');
+        }
 
-        // Endpoint de personagens
-        this.endpoints.set('/api/dmhub/actors', {
+        if (Hooks.call('foundry-rest-api.registerEndpoint', {
+            path: '/api/dmhub/actors',
             method: 'GET',
             handler: this.getActors.bind(this)
-        });
+        })) {
+            console.log('DMHUB Integration: Endpoint /api/dmhub/actors registrado!');
+        }
 
-        // Endpoint de personagem específico
-        this.endpoints.set('/api/dmhub/actors/{id}', {
-            method: 'GET',
-            handler: this.getActor.bind(this)
-        });
-
-        // Endpoint de mundos
-        this.endpoints.set('/api/dmhub/worlds', {
+        if (Hooks.call('foundry-rest-api.registerEndpoint', {
+            path: '/api/dmhub/worlds',
             method: 'GET',
             handler: this.getWorlds.bind(this)
-        });
+        })) {
+            console.log('DMHUB Integration: Endpoint /api/dmhub/worlds registrado!');
+        }
+    }
 
-        // Endpoint de sincronização
-        this.endpoints.set('/api/dmhub/sync', {
-            method: 'POST',
-            handler: this.syncData.bind(this)
-        });
+    /**
+     * Configurar endpoints alternativos (fallback)
+     */
+    setupAlternativeEndpoints() {
+        console.log('DMHUB Integration: Configurando endpoints alternativos...');
+        
+        // Criar endpoints simples via fetch interceptor
+        this.setupFetchInterceptor();
+    }
 
-        // Endpoint de configuração
-        this.endpoints.set('/api/dmhub/config', {
-            method: 'GET',
-            handler: this.getConfig.bind(this)
-        });
-
-        // Endpoint de webhook
-        this.endpoints.set('/api/dmhub/webhook', {
-            method: 'POST',
-            handler: this.webhookHandler.bind(this)
-        });
+    /**
+     * Configurar interceptor de fetch para simular endpoints
+     */
+    setupFetchInterceptor() {
+        console.log('DMHUB Integration: Configurando interceptor de fetch...');
+        
+        // Interceptar requisições para nossos endpoints
+        const originalFetch = window.fetch;
+        window.fetch = async (url, options = {}) => {
+            const urlString = url.toString();
+            
+            if (urlString.includes('/api/dmhub/status')) {
+                return new Response(JSON.stringify(this.getStatus()), {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            }
+            
+            if (urlString.includes('/api/dmhub/actors')) {
+                return new Response(JSON.stringify(this.getActors()), {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            }
+            
+            if (urlString.includes('/api/dmhub/worlds')) {
+                return new Response(JSON.stringify(this.getWorlds()), {
+                    headers: { 'Content-Type': 'application/json' }
+                });
+            }
+            
+            // Chamar fetch original para outras URLs
+            return originalFetch(url, options);
+        };
+        
+        console.log('DMHUB Integration: Interceptor de fetch configurado!');
     }
 
     /**
