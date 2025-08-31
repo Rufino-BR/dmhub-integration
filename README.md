@@ -317,7 +317,7 @@ Este projeto está licenciado sob a **MIT License** - veja o arquivo [LICENSE](L
 
 ### **Canais de Suporte**
 
-- **Issues**: [GitHub Issues](https://github.com/dmhub/foundry-integration/issues)
+- **Issues**: [GitHub Issues](https://github.com/Rufino-BR/dmhub-integration/issues)
 - **Discord**: [DMHUB Community](https://discord.gg/dmhub)
 - **Email**: support@dmhub.com
 
