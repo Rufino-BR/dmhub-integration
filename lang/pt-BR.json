@@ -1,0 +1,13 @@
+{
+  "dmhub-integration.title": "Integração DMHUB",
+  "dmhub-integration.description": "Integração entre DMHUB e Foundry VTT para sincronização de campanhas e personagens",
+  "dmhub-integration.settings.title": "Configurações da Integração DMHUB",
+  "dmhub-integration.settings.apiUrl": "URL da API DMHUB",
+  "dmhub-integration.settings.apiKey": "Chave da API DMHUB",
+  "dmhub-integration.settings.enableSync": "Habilitar Sincronização",
+  "dmhub-integration.settings.autoSync": "Sincronização automática em mudanças",
+  "dmhub-integration.status.connected": "Conectado ao DMHUB",
+  "dmhub-integration.status.disconnected": "Desconectado do DMHUB",
+  "dmhub-integration.sync.success": "Sincronização bem-sucedida",
+  "dmhub-integration.sync.error": "Falha na sincronização"
+}
