@@ -6,7 +6,7 @@
 class DMHUBAPI {
     constructor() {
         this.endpoints = new Map();
-        this.config = null; // Será configurado depois
+        this._config = null; // Será configurado depois
         this.setupEndpoints();
         this.setupHooks();
         
@@ -19,7 +19,7 @@ class DMHUBAPI {
      */
     loadConfig() {
         try {
-            this.config = {
+            this._config = {
                 enabled: game.settings.get('dmhub-integration', 'enabled') ?? true,
                 api_key: game.settings.get('dmhub-integration', 'api_key') ?? '',
                 webhook_url: game.settings.get('dmhub-integration', 'webhook_url') ?? '',
@@ -28,7 +28,7 @@ class DMHUBAPI {
             };
         } catch (error) {
             console.warn('DMHUB Integration: Configurações ainda não disponíveis, usando padrões');
-            this.config = {
+            this._config = {
                 enabled: true,
                 api_key: '',
                 webhook_url: '',
@@ -248,7 +248,7 @@ class DMHUBAPI {
     getConfig(request) {
         return {
             success: true,
-            data: this.config
+            data: this._config
         };
     }
 
@@ -334,7 +334,7 @@ class DMHUBAPI {
      * Notificar DMHUB sobre mudanças
      */
     async notifyDMHUB(event, data) {
-        if (!this.config.webhook_url) return;
+        if (!this._config.webhook_url) return;
 
         try {
             const payload = {
@@ -345,11 +345,11 @@ class DMHUBAPI {
                 module_version: '1.0.0'
             };
 
-            await fetch(this.config.webhook_url, {
+            await fetch(this._config.webhook_url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.config.api_key}`
+                    'Authorization': `Bearer ${this._config.api_key}`
                 },
                 body: JSON.stringify(payload)
             });
@@ -387,8 +387,8 @@ class DMHUBAPI {
      */
     handleConfigUpdate(data) {
         // Atualizar configuração local
-        this.config = { ...this.config, ...data };
-        game.settings.set('dmhub-integration', 'config', this.config);
+        this._config = { ...this._config, ...data };
+        game.settings.set('dmhub-integration', 'config', this._config);
         console.log('DMHUB Integration: Configuration updated', data);
     }
 
@@ -396,7 +396,7 @@ class DMHUBAPI {
      * Método para verificar se a API está ativa
      */
     isActive() {
-        return this.config && this.config.enabled;
+        return this._config && this._config.enabled;
     }
 
     /**
