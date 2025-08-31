@@ -255,10 +255,12 @@ class DMHUBAPI {
     /**
      * Endpoint: Webhook handler
      */
-    webhookHandler(request) {
+    async webhookHandler(request) {
         try {
-            const data = request.body;
-            this.processWebhookEvent(data.event, data.data);
+            const { event, data } = request.body;
+            
+            // Processar evento do webhook
+            this.processWebhookEvent(event, data);
             
             return {
                 success: true,
@@ -271,54 +273,6 @@ class DMHUBAPI {
                 code: 500
             };
         }
-    }
-
-    /**
-     * Método de teste para verificar se a API está funcionando
-     */
-    test() {
-        console.log('DMHUB Integration: Executando teste completo da API...');
-        
-        try {
-            const result = {
-                status: this.getStatus(),
-                actors: this.getActors(),
-                worlds: this.getWorlds(),
-                config: this.getConfig()
-            };
-            
-            console.log('DMHUB Integration: ✅ Teste executado com sucesso!');
-            console.log('DMHUB Integration: Resultado:', result);
-            
-            return result;
-        } catch (error) {
-            console.error('DMHUB Integration: ❌ Erro no teste:', error);
-            return {
-                error: error.message,
-                success: false
-            };
-        }
-    }
-
-    /**
-     * Método para obter informações da API
-     */
-    info() {
-        return {
-            module: 'dmhub-integration',
-            version: '1.2.0',
-            available: true,
-            methods: ['getStatus', 'getActors', 'getWorlds', 'getConfig', 'test', 'info'],
-            endpoints: Array.from(this.endpoints.keys()),
-            config: this.config
-        };
-    }
-
-    /**
-     * Método para verificar se a API está ativa
-     */
-    isActive() {
-        return this.config && this.config.enabled;
     }
 
     /**
@@ -436,6 +390,32 @@ class DMHUBAPI {
         this.config = { ...this.config, ...data };
         game.settings.set('dmhub-integration', 'config', this.config);
         console.log('DMHUB Integration: Configuration updated', data);
+    }
+
+    /**
+     * Método para verificar se a API está ativa
+     */
+    isActive() {
+        return this.config && this.config.enabled;
+    }
+
+    /**
+     * Aliases para facilitar o uso da API
+     */
+    get status() {
+        return this.getStatus();
+    }
+
+    get actors() {
+        return this.getActors();
+    }
+
+    get worlds() {
+        return this.getWorlds();
+    }
+
+    get config() {
+        return this.getConfig();
     }
 }
 
