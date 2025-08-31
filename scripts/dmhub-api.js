@@ -42,99 +42,47 @@ class DMHUBAPI {
      * Configurar endpoints da API
      */
     setupEndpoints() {
-        console.log('DMHUB Integration: Tentando registrar endpoints via foundry-rest-api...');
-        
-        // Verificar se o módulo foundry-rest-api está disponível
-        if (typeof window.foundryRestAPI !== 'undefined') {
-            console.log('DMHUB Integration: foundry-rest-api encontrado, registrando endpoints...');
-            
-            try {
-                // Registrar endpoints via foundry-rest-api
-                this.registerWithFoundryRestAPI();
-                console.log('DMHUB Integration: Endpoints registrados com sucesso!');
-            } catch (error) {
-                console.error('DMHUB Integration: Erro ao registrar endpoints:', error);
-            }
-        } else {
-            console.warn('DMHUB Integration: foundry-rest-api não encontrado, usando sistema alternativo...');
-            this.setupAlternativeEndpoints();
-        }
-    }
-
-    /**
-     * Registrar endpoints via foundry-rest-api
-     */
-    registerWithFoundryRestAPI() {
-        // Tentar registrar via hooks do foundry-rest-api
-        if (Hooks.call('foundry-rest-api.registerEndpoint', {
-            path: '/api/dmhub/status',
+        // Endpoint de status
+        this.endpoints.set('/api/dmhub/status', {
             method: 'GET',
             handler: this.getStatus.bind(this)
-        })) {
-            console.log('DMHUB Integration: Endpoint /api/dmhub/status registrado!');
-        }
+        });
 
-        if (Hooks.call('foundry-rest-api.registerEndpoint', {
-            path: '/api/dmhub/actors',
+        // Endpoint de personagens
+        this.endpoints.set('/api/dmhub/actors', {
             method: 'GET',
             handler: this.getActors.bind(this)
-        })) {
-            console.log('DMHUB Integration: Endpoint /api/dmhub/actors registrado!');
-        }
+        });
 
-        if (Hooks.call('foundry-rest-api.registerEndpoint', {
-            path: '/api/dmhub/worlds',
+        // Endpoint de personagem específico
+        this.endpoints.set('/api/dmhub/actors/{id}', {
+            method: 'GET',
+            handler: this.getActor.bind(this)
+        });
+
+        // Endpoint de mundos
+        this.endpoints.set('/api/dmhub/worlds', {
             method: 'GET',
             handler: this.getWorlds.bind(this)
-        })) {
-            console.log('DMHUB Integration: Endpoint /api/dmhub/worlds registrado!');
-        }
-    }
+        });
 
-    /**
-     * Configurar endpoints alternativos (fallback)
-     */
-    setupAlternativeEndpoints() {
-        console.log('DMHUB Integration: Configurando endpoints alternativos...');
-        
-        // Criar endpoints simples via fetch interceptor
-        this.setupFetchInterceptor();
-    }
+        // Endpoint de sincronização
+        this.endpoints.set('/api/dmhub/sync', {
+            method: 'POST',
+            handler: this.syncData.bind(this)
+        });
 
-    /**
-     * Configurar interceptor de fetch para simular endpoints
-     */
-    setupFetchInterceptor() {
-        console.log('DMHUB Integration: Configurando interceptor de fetch...');
-        
-        // Interceptar requisições para nossos endpoints
-        const originalFetch = window.fetch;
-        window.fetch = async (url, options = {}) => {
-            const urlString = url.toString();
-            
-            if (urlString.includes('/api/dmhub/status')) {
-                return new Response(JSON.stringify(this.getStatus()), {
-                    headers: { 'Content-Type': 'application/json' }
-                });
-            }
-            
-            if (urlString.includes('/api/dmhub/actors')) {
-                return new Response(JSON.stringify(this.getActors()), {
-                    headers: { 'Content-Type': 'application/json' }
-                });
-            }
-            
-            if (urlString.includes('/api/dmhub/worlds')) {
-                return new Response(JSON.stringify(this.getWorlds()), {
-                    headers: { 'Content-Type': 'application/json' }
-                });
-            }
-            
-            // Chamar fetch original para outras URLs
-            return originalFetch(url, options);
-        };
-        
-        console.log('DMHUB Integration: Interceptor de fetch configurado!');
+        // Endpoint de configuração
+        this.endpoints.set('/api/dmhub/config', {
+            method: 'GET',
+            handler: this.getConfig.bind(this)
+        });
+
+        // Endpoint de webhook
+        this.endpoints.set('/api/dmhub/webhook', {
+            method: 'POST',
+            handler: this.webhookHandler.bind(this)
+        });
     }
 
     /**
@@ -160,6 +108,98 @@ class DMHUBAPI {
         Hooks.on('updateWorld', (changes, options, userId) => {
             this.notifyDMHUB('world_updated', { changes, userId });
         });
+    }
+
+    /**
+     * Configurar endpoints alternativos (fallback)
+     */
+    setupAlternativeEndpoints() {
+        console.log('DMHUB Integration: Configurando endpoints alternativos...');
+        
+        // Tentar usar hooks do Foundry VTT
+        this.setupFoundryHooks();
+        
+        // Como fallback, usar interceptor de fetch
+        this.setupFetchInterceptor();
+    }
+
+    /**
+     * Configurar hooks do Foundry VTT para endpoints
+     */
+    setupFoundryHooks() {
+        console.log('DMHUB Integration: Configurando hooks do Foundry VTT...');
+        
+        try {
+            // Hook para quando o socket estiver pronto
+            Hooks.on('socketReady', () => {
+                console.log('DMHUB Integration: Socket pronto, configurando endpoints...');
+                this.setupSocketEndpoints();
+            });
+            
+            // Hook para quando o jogo estiver pronto
+            Hooks.once('ready', () => {
+                console.log('DMHUB Integration: Jogo pronto, configurando endpoints...');
+                this.setupGameEndpoints();
+            });
+            
+            console.log('DMHUB Integration: Hooks do Foundry VTT configurados!');
+        } catch (error) {
+            console.error('DMHUB Integration: Erro ao configurar hooks:', error);
+        }
+    }
+
+    /**
+     * Configurar endpoints via socket do Foundry VTT
+     */
+    setupSocketEndpoints() {
+        console.log('DMHUB Integration: Configurando endpoints via socket...');
+        
+        if (game.socket) {
+            // Registrar handlers de socket
+            game.socket.on('dmhub-status', () => {
+                console.log('DMHUB Integration: Requisição de status recebida via socket');
+                return this.getStatus();
+            });
+            
+            game.socket.on('dmhub-actors', () => {
+                console.log('DMHUB Integration: Requisição de personagens recebida via socket');
+                return this.getActors();
+            });
+            
+            game.socket.on('dmhub-worlds', () => {
+                console.log('DMHUB Integration: Requisição de mundos recebida via socket');
+                return this.getWorlds();
+            });
+            
+            console.log('DMHUB Integration: Endpoints de socket configurados!');
+        } else {
+            console.warn('DMHUB Integration: Socket não disponível');
+        }
+    }
+
+    /**
+     * Configurar endpoints via sistema de jogo
+     */
+    setupGameEndpoints() {
+        console.log('DMHUB Integration: Configurando endpoints via sistema de jogo...');
+        
+        // Expor métodos globalmente para acesso via console
+        window.dmhubAPI = {
+            status: () => this.getStatus(),
+            actors: () => this.getActors(),
+            worlds: () => this.getWorlds(),
+            test: () => {
+                console.log('DMHUB Integration: Teste de API executado!');
+                return {
+                    status: this.getStatus(),
+                    actors: this.getActors(),
+                    worlds: this.getWorlds()
+                };
+            }
+        };
+        
+        console.log('DMHUB Integration: API exposta globalmente como window.dmhubAPI');
+        console.log('DMHUB Integration: Use window.dmhubAPI.test() para testar todos os endpoints');
     }
 
     /**
