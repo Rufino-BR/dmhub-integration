@@ -22,9 +22,6 @@ class DMHUBConfig {
         // Depois carregar as configurações
         this.loadConfig();
         
-        // Configurar hooks
-        this.setupHooks();
-        
         // Inicializar interface
         this.initInterface();
     }
