@@ -9,9 +9,71 @@ class DMHUBAPI {
         this.config = null; // Será configurado depois
         this.setupEndpoints();
         this.setupHooks();
-        
+
         // Configurar configurações quando estiverem disponíveis
         this.loadConfig();
+        
+        // Expor API imediatamente
+        this.exposeAPI();
+    }
+
+    /**
+     * Expor API globalmente
+     */
+    exposeAPI() {
+        console.log('DMHUB Integration: Expondo API globalmente...');
+        
+        try {
+            // Expor métodos globalmente para acesso via console
+            const api = {
+                status: () => {
+                    console.log('DMHUB Integration: Executando status()');
+                    return this.getStatus();
+                },
+                actors: () => {
+                    console.log('DMHUB Integration: Executando actors()');
+                    return this.getActors();
+                },
+                worlds: () => {
+                    console.log('DMHUB Integration: Executando worlds()');
+                    return this.getWorlds();
+                },
+                test: () => {
+                    console.log('DMHUB Integration: Executando test() completo');
+                    const result = {
+                        status: this.getStatus(),
+                        actors: this.getActors(),
+                        worlds: this.getWorlds()
+                    };
+                    console.log('DMHUB Integration: Resultado do teste:', result);
+                    return result;
+                },
+                info: () => {
+                    console.log('DMHUB Integration: Informações da API');
+                    return {
+                        module: 'dmhub-integration',
+                        version: '1.2.0',
+                        available: true,
+                        methods: ['status', 'actors', 'worlds', 'test', 'info']
+                    };
+                }
+            };
+            
+            // Expor no escopo global
+            window.dmhubAPI = api;
+            
+            // Verificar se foi exposto corretamente
+            if (window.dmhubAPI && window.dmhubAPI.test) {
+                console.log('DMHUB Integration: ✅ API exposta com sucesso como window.dmhubAPI');
+                console.log('DMHUB Integration: ✅ Métodos disponíveis:', Object.keys(window.dmhubAPI));
+                console.log('DMHUB Integration: ✅ Use window.dmhubAPI.test() para testar todos os endpoints');
+            } else {
+                console.error('DMHUB Integration: ❌ Falha ao expor API globalmente');
+            }
+            
+        } catch (error) {
+            console.error('DMHUB Integration: Erro ao expor API:', error);
+        }
     }
     
     /**
@@ -83,65 +145,6 @@ class DMHUBAPI {
             method: 'POST',
             handler: this.webhookHandler.bind(this)
         });
-    }
-
-    /**
-     * Configurar endpoints via sistema de jogo
-     */
-    setupGameEndpoints() {
-        console.log('DMHUB Integration: Configurando endpoints via sistema de jogo...');
-        
-        try {
-            // Expor métodos globalmente para acesso via console
-            const api = {
-                status: () => {
-                    console.log('DMHUB Integration: Executando status()');
-                    return this.getStatus();
-                },
-                actors: () => {
-                    console.log('DMHUB Integration: Executando actors()');
-                    return this.getActors();
-                },
-                worlds: () => {
-                    console.log('DMHUB Integration: Executando worlds()');
-                    return this.getWorlds();
-                },
-                test: () => {
-                    console.log('DMHUB Integration: Executando test() completo');
-                    const result = {
-                        status: this.getStatus(),
-                        actors: this.getActors(),
-                        worlds: this.getWorlds()
-                    };
-                    console.log('DMHUB Integration: Resultado do teste:', result);
-                    return result;
-                },
-                info: () => {
-                    console.log('DMHUB Integration: Informações da API');
-                    return {
-                        module: 'dmhub-integration',
-                        version: '1.2.0',
-                        available: true,
-                        methods: ['status', 'actors', 'worlds', 'test', 'info']
-                    };
-                }
-            };
-            
-            // Expor no escopo global
-            window.dmhubAPI = api;
-            
-            // Verificar se foi exposto corretamente
-            if (window.dmhubAPI && window.dmhubAPI.test) {
-                console.log('DMHUB Integration: ✅ API exposta com sucesso como window.dmhubAPI');
-                console.log('DMHUB Integration: ✅ Métodos disponíveis:', Object.keys(window.dmhubAPI));
-                console.log('DMHUB Integration: ✅ Use window.dmhubAPI.test() para testar todos os endpoints');
-            } else {
-                console.error('DMHUB Integration: ❌ Falha ao expor API globalmente');
-            }
-            
-        } catch (error) {
-            console.error('DMHUB Integration: Erro ao configurar endpoints do jogo:', error);
-        }
     }
 
     /**
