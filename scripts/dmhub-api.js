@@ -397,7 +397,11 @@ class DMHUBAPI {
 Hooks.once('ready', () => {
     // Verificar se o módulo está ativo
     if (game.modules.get('dmhub-integration')?.active) {
-        window.dmhubAPI = new DMHUBAPI();
+        // Expor a classe globalmente para que outros scripts possam acessá-la
+        window.DMHUBAPI = DMHUBAPI;
+
+        // Instanciar a API quando o script carregar
+        const dmhubAPI = new DMHUBAPI();
         console.log('DMHUB Integration: API initialized successfully');
     }
 });

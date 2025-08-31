@@ -412,7 +412,11 @@ class DMHUBConfig {
 Hooks.once('ready', () => {
     // Verificar se o módulo está ativo
     if (game.modules.get('dmhub-integration')?.active) {
-        window.dmhubConfig = new DMHUBConfig();
+        // Expor a classe globalmente para que outros scripts possam acessá-la
+        window.DMHUBConfig = DMHUBConfig;
+
+        // Instanciar a configuração quando o script carregar
+        const dmhubConfig = new DMHUBConfig();
         console.log('DMHUB Integration: Configuration module initialized');
     }
 });
