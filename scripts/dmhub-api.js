@@ -6,9 +6,36 @@
 class DMHUBAPI {
     constructor() {
         this.endpoints = new Map();
-        this.config = game.settings.get('dmhub-integration', 'config');
+        this.config = null; // Será configurado depois
         this.setupEndpoints();
         this.setupHooks();
+        
+        // Configurar configurações quando estiverem disponíveis
+        this.loadConfig();
+    }
+    
+    /**
+     * Carregar configurações
+     */
+    loadConfig() {
+        try {
+            this.config = {
+                enabled: game.settings.get('dmhub-integration', 'enabled') ?? true,
+                api_key: game.settings.get('dmhub-integration', 'api_key') ?? '',
+                webhook_url: game.settings.get('dmhub-integration', 'webhook_url') ?? '',
+                auto_sync: game.settings.get('dmhub-integration', 'auto_sync') ?? true,
+                debug_mode: game.settings.get('dmhub-integration', 'debug_mode') ?? false
+            };
+        } catch (error) {
+            console.warn('DMHUB Integration: Configurações ainda não disponíveis, usando padrões');
+            this.config = {
+                enabled: true,
+                api_key: '',
+                webhook_url: '',
+                auto_sync: true,
+                debug_mode: false
+            };
+        }
     }
 
     /**

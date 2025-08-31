@@ -13,20 +13,20 @@ class DMHUBConfig {
     /**
      * Inicializar o módulo de configuração
      */
-    async init() {
-        // Aguardar o Foundry VTT estar pronto
-        await this.waitForReady();
+    init() {
+        console.log('DMHUB Integration: Configuration module initialized');
         
-        // Carregar configurações
-        this.loadConfig();
-        
-        // Criar interface de configuração
-        this.createConfigForm();
-        
-        // Registrar configurações
+        // Registrar configurações PRIMEIRO
         this.registerSettings();
         
-        console.log('DMHUB Integration: Configuration module initialized');
+        // Depois carregar as configurações
+        this.loadConfig();
+        
+        // Configurar hooks
+        this.setupHooks();
+        
+        // Inicializar interface
+        this.initInterface();
     }
 
     /**
